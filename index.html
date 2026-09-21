@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Registro de factura</title>
+<title>registro de factura</title>
 <style>
   :root{
     --bg:#F6F5F2; --ink:#1E2A24; --line:#D8D4C8;
@@ -68,37 +68,37 @@
 <body>
 <main>
   <div id="formWrap">
-    <h1>Registro de factura</h1>
-    <p class="sub">Ingresá tus datos para completar el registro.</p>
+    <h1>registro de factura</h1>
+    <p class="sub">ingresá tus datos para completar el registro.</p>
     <form id="f">
       <div>
-        <label for="ced">Número de cédula</label>
+        <label for="ced">número de cédula</label>
         <input id="ced" name="cedula" type="text" placeholder="000-000000-0000A" required>
       </div>
       <div>
-        <label for="tel">Número de teléfono</label>
+        <label for="tel">número de teléfono</label>
         <input id="tel" name="telefono" type="tel" inputmode="tel" placeholder="8888-8888" required>
       </div>
       <div>
-        <label for="fac">Número de factura</label>
+        <label for="fac">número de factura</label>
         <input id="fac" name="factura" type="text" inputmode="numeric" placeholder="FAC-00123" required>
       </div>
       <div>
-        <label for="tot">Total de la factura (C$)</label>
+        <label for="tot">total de la factura (C$)</label>
         <input id="tot" name="total" type="number" step="0.01" min="0" placeholder="1500.00" required>
       </div>
-      <button type="submit" id="btn">Guardar</button>
+      <button type="submit" id="btn">guardar</button>
       <div id="msg"></div>
     </form>
   </div>
   <div class="done" id="done">
-    <h1>Listo</h1>
-    <p class="sub">Tu registro fue guardado correctamente.</p>
+    <h1>listo</h1>
+    <p class="sub">tu registro fue guardado al suave.</p>
   </div>
 </main>
 <script>
-  // la url corregida para que funcione bien el string
-  const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbyPBHxym4JbrBEQXSe7tnhjABAbJnHeTPh0XYCaYVz0eZanxbxd7mZJ2TuKrtm6hD5_/exec";
+  // pegá tu nuevo link de google apps script aquí
+  const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbwJ7fhVPT1nbo9kKvog2GiuJsJtRpOoWGE8qZpPxRlLptlzrR2ow7iYnx7sF6fK9U1O/exec";
 
   const form = document.getElementById('f');
   const btn = document.getElementById('btn');
@@ -116,18 +116,34 @@
     // validación de los 1500 pesos
     if (total < 1500) {
       msg.className = 'show error';
-      msg.textContent = 'el total de la factura debe ser de al menos C$ 1,500.00 para acceder.';
+      msg.textContent = 'el total de la factura debe ser de al menos c$ 1,500.00 para acceder.';
       return;
     }
 
-    if (ENDPOINT_URL.includes('PEGA_AQUI')) {
+    if (ENDPOINT_URL === "tu_nuevo_link_aqui" || ENDPOINT_URL.includes('PEGA_AQUI')) {
       msg.className = 'show error';
-      msg.textContent = 'Falta configurar la URL del Apps Script en el código de esta página.';
+      msg.textContent = 'falta configurar la url del apps script.';
       return;
     }
 
-    btn.disabled = true; btn.textContent = 'Guardando...';
+    btn.disabled = true; btn.textContent = 'verificando...';
+
     try {
+      // 1. pedimos la lista de facturas al sheet
+      const res = await fetch(ENDPOINT_URL, { redirect: 'follow' });
+      const facturasUsadas = await res.json();
+
+      // 2. revisamos si la factura ya fue ingresada
+      if (facturasUsadas.includes(factura)) {
+        msg.className = 'show error';
+        msg.textContent = '¡esta factura ya fue registrada! revisá bien.';
+        btn.disabled = false; btn.textContent = 'guardar';
+        return;
+      }
+
+      btn.textContent = 'guardando...';
+
+      // 3. si todo está chele, la guardamos
       await fetch(ENDPOINT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -138,8 +154,8 @@
       document.getElementById('done').classList.add('show');
     } catch (err) {
       msg.className = 'show error';
-      msg.textContent = 'No se pudo enviar. Verifica tu conexión e intenta de nuevo.';
-      btn.disabled = false; btn.textContent = 'Guardar';
+      msg.textContent = 'no se pudo enviar. revisá tu conexión a internet.';
+      btn.disabled = false; btn.textContent = 'guardar';
     }
   });
 </script>

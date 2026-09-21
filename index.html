@@ -69,8 +69,12 @@
 <main>
   <div id="formWrap">
     <h1>Registro de factura</h1>
-    <p class="sub">Ingresa tu número de teléfono y el número de factura para completar el registro.</p>
+    <p class="sub">Ingresá tus datos para completar el registro.</p>
     <form id="f">
+      <div>
+        <label for="ced">Número de cédula</label>
+        <input id="ced" name="cedula" type="text" placeholder="000-000000-0000A" required>
+      </div>
       <div>
         <label for="tel">Número de teléfono</label>
         <input id="tel" name="telefono" type="tel" inputmode="tel" placeholder="8888-8888" required>
@@ -78,6 +82,10 @@
       <div>
         <label for="fac">Número de factura</label>
         <input id="fac" name="factura" type="text" inputmode="numeric" placeholder="FAC-00123" required>
+      </div>
+      <div>
+        <label for="tot">Total de la factura (C$)</label>
+        <input id="tot" name="total" type="number" step="0.01" min="0" placeholder="1500.00" required>
       </div>
       <button type="submit" id="btn">Guardar</button>
       <div id="msg"></div>
@@ -89,8 +97,9 @@
   </div>
 </main>
 <script>
-  // Reemplaza esto con la URL de tu Google Apps Script Web App (ver Code.gs)
-https://script.google.com/macros/s/AKfycbyMeyqzDS-D-Hr4FbtTHFBKtiSTrpgEDa1zfCwhxrSD2DgDno_sE4YJgTgHhuS3ailG/exec
+  // la url corregida para que funcione bien el string
+  const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbyMeyqzDS-D-Hr4FbtTHFBKtiSTrpgEDa1zfCwhxrSD2DgDno_sE4YJgTgHhuS3ailG/exec";
+
   const form = document.getElementById('f');
   const btn = document.getElementById('btn');
   const msg = document.getElementById('msg');
@@ -98,8 +107,18 @@ https://script.google.com/macros/s/AKfycbyMeyqzDS-D-Hr4FbtTHFBKtiSTrpgEDa1zfCwhx
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     msg.className = ''; msg.textContent = '';
+    
+    const cedula = document.getElementById('ced').value.trim();
     const telefono = document.getElementById('tel').value.trim();
     const factura = document.getElementById('fac').value.trim();
+    const total = parseFloat(document.getElementById('tot').value.trim());
+
+    // validación de los 1500 pesos
+    if (total < 1500) {
+      msg.className = 'show error';
+      msg.textContent = 'el total de la factura debe ser de al menos C$ 1,500.00 para acceder.';
+      return;
+    }
 
     if (ENDPOINT_URL.includes('PEGA_AQUI')) {
       msg.className = 'show error';
@@ -111,9 +130,9 @@ https://script.google.com/macros/s/AKfycbyMeyqzDS-D-Hr4FbtTHFBKtiSTrpgEDa1zfCwhx
     try {
       await fetch(ENDPOINT_URL, {
         method: 'POST',
-        mode: 'no-cors', // Apps Script Web Apps no devuelven CORS estándar
+        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ telefono, factura })
+        body: JSON.stringify({ cedula, telefono, factura, total })
       });
       document.getElementById('formWrap').style.display = 'none';
       document.getElementById('done').classList.add('show');

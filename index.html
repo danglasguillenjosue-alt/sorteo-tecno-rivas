@@ -5,69 +5,168 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>registro de factura</title>
 <style>
-  :root{
-    --bg:#F6F5F2; --ink:#1E2A24; --line:#D8D4C8;
-    --accent:#2F6B4F; --accent-ink:#FFFFFF; --error:#B3413A;
-    box-sizing:border-box;
-    padding-top:env(safe-area-inset-top,0px);
-    padding-bottom:env(safe-area-inset-bottom,0px);
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Poppins', sans-serif; 
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#161A18; --ink:#EDEBE4; --line:#333B36; --accent:#5BAE87; --accent-ink:#0E1210;
-    }
+  
+  body {
+    min-height: 100vh;
+    /* fondo con degradado animado al suave */
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1b2838);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 20px; 
+    color: #ffffff;
   }
-  :root[data-theme="dark"]{
-    --bg:#161A18; --ink:#EDEBE4; --line:#333B36; --accent:#5BAE87; --accent-ink:#0E1210;
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
-  *{box-sizing:border-box;}
-  html{scroll-padding-top:env(safe-area-inset-top,0px);}
-  body{
-    margin:0; min-height:100%; background:var(--bg); color:var(--ink);
-    font-family:'Iowan Old Style','Georgia',serif;
-    display:flex; align-items:center; justify-content:center; padding:32px 20px;
+
+  main { 
+    width: 100%; 
+    max-width: 420px; 
   }
-  main{width:100%; max-width:420px;}
-  h1{
-    font-size:1.6rem; font-weight:600; margin:0 0 6px; letter-spacing:-0.01em;
+  
+  /* la tarjeta de cristal */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   }
-  p.sub{
-    margin:0 0 32px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    font-size:0.95rem; opacity:0.7; line-height:1.5;
+
+  h1 { 
+    font-size: 1.8rem; 
+    font-weight: 600; 
+    text-align: center; 
+    margin-bottom: 8px; 
+    color: #4ade80; /* un verde tuani */
   }
-  form{display:flex; flex-direction:column; gap:20px;}
-  label{
-    display:block; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    font-size:0.8rem; opacity:0.75; margin-bottom:6px;
+  
+  p.sub { 
+    text-align: center; 
+    font-size: 0.9rem; 
+    color: #94a3b8; 
+    margin-bottom: 30px; 
   }
-  input{
-    width:100%; padding:14px 14px; font-size:1.05rem;
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    border:1.5px solid var(--line); border-radius:6px; background:transparent; color:var(--ink);
+
+  form { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 18px; 
   }
-  input:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent);}
-  button{
-    margin-top:8px; padding:14px; border:none; border-radius:6px;
-    background:var(--accent); color:var(--accent-ink); font-size:1rem; font-weight:600;
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    cursor:pointer;
+  
+  label {
+    display: block; 
+    font-size: 0.8rem; 
+    color: #cbd5e1; 
+    margin-bottom: 6px; 
+    font-weight: 500; 
+    letter-spacing: 0.5px;
   }
-  button:disabled{opacity:0.6; cursor:default;}
-  #msg{
-    margin-top:16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    font-size:0.9rem; display:none;
+  
+  input {
+    width: 100%; 
+    padding: 14px 16px; 
+    font-size: 1rem;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px; 
+    color: #ffffff; 
+    transition: all 0.3s ease;
   }
-  #msg.show{display:block;}
-  #msg.error{color:var(--error);}
-  #msg.ok{color:var(--accent);}
-  .done{display:none; text-align:center;}
-  .done.show{display:block;}
-  .done h1{margin-bottom:10px;}
+  
+  input::placeholder { color: rgba(255, 255, 255, 0.3); }
+  
+  input:focus { 
+    outline: none; 
+    border-color: #4ade80; 
+    background: rgba(0, 0, 0, 0.4); 
+    box-shadow: 0 0 12px rgba(74, 222, 128, 0.2); 
+  }
+  
+  button {
+    margin-top: 12px; 
+    padding: 16px; 
+    border: none; 
+    border-radius: 12px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white; 
+    font-size: 1.05rem; 
+    font-weight: 600;
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  }
+  
+  button:hover:not(:disabled) { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5); 
+  }
+  
+  button:disabled { 
+    opacity: 0.6; 
+    cursor: not-allowed; 
+    background: #475569;
+    box-shadow: none;
+  }
+  
+  #msg { 
+    margin-top: 15px; 
+    font-size: 0.85rem; 
+    text-align: center; 
+    display: none; 
+    padding: 12px; 
+    border-radius: 10px; 
+  }
+  
+  #msg.show { 
+    display: block; 
+    animation: fadeIn 0.3s; 
+  }
+  
+  #msg.error { 
+    background: rgba(239, 68, 68, 0.15); 
+    color: #fca5a5; 
+    border: 1px solid rgba(239, 68, 68, 0.3); 
+  }
+  
+  .done { 
+    display: none; 
+    text-align: center; 
+    padding: 20px 0; 
+  }
+  
+  .done.show { 
+    display: block; 
+    animation: fadeIn 0.5s; 
+  }
+  
+  .done h1 { color: #4ade80; margin-bottom: 10px; }
+  
+  @keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+  }
 </style>
 </head>
 <body>
 <main>
-  <div id="formWrap">
+  <div id="formWrap" class="glass-panel">
     <h1>registro de factura</h1>
     <p class="sub">ingresá tus datos para completar el registro.</p>
     <form id="f">
@@ -84,18 +183,20 @@
         <input id="fac" name="factura" type="text" inputmode="numeric" placeholder="FAC-00123" required>
       </div>
       <div>
-        <label for="tot">total de la factura (C$)</label>
+        <label for="tot">total de la factura (c$)</label>
         <input id="tot" name="total" type="number" step="0.01" min="0" placeholder="1500.00" required>
       </div>
       <button type="submit" id="btn">guardar</button>
       <div id="msg"></div>
     </form>
   </div>
-  <div class="done" id="done">
-    <h1>listo</h1>
+  
+  <div class="done glass-panel" id="done">
+    <h1>¡listo!</h1>
     <p class="sub">tu registro fue guardado al suave.</p>
   </div>
 </main>
+
 <script>
   // pegá tu nuevo link de google apps script aquí
   const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbwJ7fhVPT1nbo9kKvog2GiuJsJtRpOoWGE8qZpPxRlLptlzrR2ow7iYnx7sF6fK9U1O/exec";
